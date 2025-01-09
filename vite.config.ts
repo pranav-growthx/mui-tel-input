@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 import peerDepsExternal from 'rollup-plugin-peer-deps-external'
 import dts from 'vite-plugin-dts'
 
-const path = require('path')
+import * as path from 'node:path';
 
 export default defineConfig({
   test: {
