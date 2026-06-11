@@ -30,6 +30,7 @@ import type {
   MuiTelInputContinent,
   MuiTelInputCountry,
   MuiTelInputFlagElement,
+  MuiTelInputFlagSlots,
   MuiTelInputInfo,
   MuiTelInputProps,
   MuiTelInputReason
@@ -42,6 +43,7 @@ export type {
   MuiTelInputContinent,
   MuiTelInputCountry,
   MuiTelInputFlagElement,
+  MuiTelInputFlagSlots,
   MuiTelInputInfo,
   MuiTelInputProps,
   MuiTelInputReason
@@ -100,6 +102,7 @@ const MuiTelInput = (props: MuiTelInputProps) => {
     getFlagElement = getDefaultFlagElement,
     unknownFlagElement = defaultUnknownFlagElement,
     FlagIconButtonProps,
+    flagSlots,
     ...restTextFieldProps
   } = props
   const validDefaultCountry = forceCallingCode
@@ -153,6 +156,9 @@ const MuiTelInput = (props: MuiTelInputProps) => {
     onBlur?.(event, buildInputInfo('blur'))
   }
 
+  const FlagButtonSlot = flagSlots?.FlagButton ?? FlagButton
+  const FlagsMenuSlot = flagSlots?.FlagsMenu ?? FlagsMenu
+
   const isoCodeWithPlus = isoCode ? `+${getCallingCodeOfCountry(isoCode)}` : ''
   const validInputValue = forceCallingCode
     ? removeOccurrence(inputValue, isoCodeWithPlus).trimStart()
@@ -181,7 +187,7 @@ const MuiTelInput = (props: MuiTelInputProps) => {
           input: {
             startAdornment: (
               <InputAdornment position="start" sx={{ flexShrink: 0 }}>
-                <FlagButton
+                <FlagButtonSlot
                   isFlagsMenuOpened={Boolean(anchorEl)}
                   isoCode={isoCode}
                   forceCallingCode={forceCallingCode}
@@ -190,6 +196,7 @@ const MuiTelInput = (props: MuiTelInputProps) => {
                   getFlagElement={getFlagElement}
                   unknownFlagElement={unknownFlagElement}
                   disableDropdown={Boolean(disableDropdown)}
+                  langOfCountryName={langOfCountryName}
                   {...FlagIconButtonProps}
                 />
               </InputAdornment>
@@ -202,7 +209,7 @@ const MuiTelInput = (props: MuiTelInputProps) => {
         {...restTextFieldProps}
       />
       {!disableDropdown ? (
-        <FlagsMenu
+        <FlagsMenuSlot
           onlyCountries={onlyCountries}
           excludedCountries={excludedCountries}
           continents={continents}

@@ -158,4 +158,22 @@ describe('components/FlagsMenu', () => {
     expect(options[0]).toHaveTextContent('Belgium')
     expect(options[1]).toHaveTextContent('Venezuela')
   })
+
+  test('should merge custom slotProps with the default list props', () => {
+    render(
+      <FlagsMenu
+        anchorEl={getAnchorEl()}
+        isoCode="FR"
+        getFlagElement={getDefaultFlagElement}
+        onSelectCountry={() => {}}
+        slotProps={{
+          list: {
+            dense: true
+          }
+        }}
+      />
+    )
+
+    expect(screen.getByRole('listbox')).toHaveClass('MuiList-dense')
+  })
 })

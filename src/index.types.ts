@@ -22,6 +22,11 @@ export type MuiTelInputReason = 'country' | 'input' | 'blur'
 
 export type MuiTelInputFlagElement = React.ReactNode
 
+export type MuiTelInputFlagSlots = {
+  FlagButton?: React.ElementType
+  FlagsMenu?: React.ElementType
+}
+
 export type GetFlagElement = (
   isoCode: MuiTelInputCountry,
   {
@@ -75,4 +80,5 @@ export type MuiTelInputProps = BaseTextFieldProps &
     getFlagElement?: GetFlagElement
     unknownFlagElement?: MuiTelInputFlagElement
     FlagIconButtonProps?: Partial<IconButtonProps>
+    flagSlots?: MuiTelInputFlagSlots
   }
