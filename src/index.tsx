@@ -1,8 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { flagContainerClass } from '@components/Flag/Flag'
+import Flag, { flagContainerClass } from '@components/Flag/Flag'
 import FlagButton, { flagButtonClass } from '@components/FlagButton/FlagButton'
-import {
+import FlagMenuItem, {
   callingCodeClass,
   listItemIconFlagClass,
   listItemTextCountryClass,
@@ -30,6 +30,7 @@ import type {
   MuiTelInputContinent,
   MuiTelInputCountry,
   MuiTelInputFlagElement,
+  MuiTelInputFlagSlots,
   MuiTelInputInfo,
   MuiTelInputProps,
   MuiTelInputReason
@@ -42,6 +43,7 @@ export type {
   MuiTelInputContinent,
   MuiTelInputCountry,
   MuiTelInputFlagElement,
+  MuiTelInputFlagSlots,
   MuiTelInputInfo,
   MuiTelInputProps,
   MuiTelInputReason
@@ -50,6 +52,11 @@ export type {
 export { matchIsValidTel } from '@shared/helpers/valid-phone-number'
 
 export const textFieldClass = 'MuiTelInput-TextField'
+export type { FlagProps } from '@components/Flag/Flag'
+export type { FlagButtonProps } from '@components/FlagButton/FlagButton'
+export type { FlagMenuItemProps } from '@components/FlagMenuItem/FlagMenuItem'
+export type { FlagsMenuProps } from '@components/FlagsMenu/FlagsMenu'
+export { Flag, FlagButton, FlagMenuItem, FlagsMenu }
 
 const MuiTelInput = (props: MuiTelInputProps) => {
   const {
@@ -78,6 +85,7 @@ const MuiTelInput = (props: MuiTelInputProps) => {
     getFlagElement = getDefaultFlagElement,
     unknownFlagElement = defaultUnknownFlagElement,
     FlagIconButtonProps,
+    flagSlots,
     ...restTextFieldProps
   } = props
   const validDefaultCountry = forceCallingCode
@@ -131,6 +139,9 @@ const MuiTelInput = (props: MuiTelInputProps) => {
     onBlur?.(event, buildInputInfo('blur'))
   }
 
+  const FlagButtonSlot = flagSlots?.FlagButton ?? FlagButton
+  const FlagsMenuSlot = flagSlots?.FlagsMenu ?? FlagsMenu
+
   const isoCodeWithPlus = isoCode ? `+${getCallingCodeOfCountry(isoCode)}` : ''
   const validInputValue = forceCallingCode
     ? removeOccurrence(inputValue, isoCodeWithPlus).trimStart()
@@ -159,7 +170,7 @@ const MuiTelInput = (props: MuiTelInputProps) => {
           input: {
             startAdornment: (
               <InputAdornment position="start" sx={{ flexShrink: 0 }}>
-                <FlagButton
+                <FlagButtonSlot
                   isFlagsMenuOpened={Boolean(anchorEl)}
                   isoCode={isoCode}
                   forceCallingCode={forceCallingCode}
@@ -168,6 +179,7 @@ const MuiTelInput = (props: MuiTelInputProps) => {
                   getFlagElement={getFlagElement}
                   unknownFlagElement={unknownFlagElement}
                   disableDropdown={Boolean(disableDropdown)}
+                  langOfCountryName={langOfCountryName}
                   {...FlagIconButtonProps}
                 />
               </InputAdornment>
@@ -180,7 +192,7 @@ const MuiTelInput = (props: MuiTelInputProps) => {
         {...restTextFieldProps}
       />
       {!disableDropdown ? (
-        <FlagsMenu
+        <FlagsMenuSlot
           onlyCountries={onlyCountries}
           excludedCountries={excludedCountries}
           continents={continents}

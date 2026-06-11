@@ -1,6 +1,6 @@
 import React from 'react'
 import FlagMenuItem from '@components/FlagMenuItem/FlagMenuItem'
-import Menu, { type MenuProps } from '@mui/material/Menu'
+import Menu, { type MenuOwnerState, type MenuProps } from '@mui/material/Menu'
 import type { MuiTelInputContinent } from '@shared/constants/continents'
 import { ISO_CODES, type MuiTelInputCountry } from '@shared/constants/countries'
 import { DEFAULT_LANG } from '@shared/constants/lang'
@@ -26,6 +26,33 @@ const defaultPreferredCountries: MuiTelInputCountry[] = []
 
 export const menuClass = 'MuiTelInput-Menu'
 
+type MenuListSlotProps = NonNullable<FlagsMenuProps['slotProps']>['list']
+
+const getMenuListSlotProps = (
+  listSlotProps: MenuListSlotProps,
+  isoCode: MuiTelInputCountry | null
+): MenuListSlotProps => {
+  const sharedListProps = {
+    role: 'listbox',
+    'aria-activedescendant': isoCode ? `country-${isoCode}` : '',
+    'aria-labelledby': 'select-country'
+  } as const
+
+  if (typeof listSlotProps === 'function') {
+    return (ownerState: MenuOwnerState) => {
+      return {
+        ...listSlotProps(ownerState),
+        ...sharedListProps
+      }
+    }
+  }
+
+  return {
+    ...listSlotProps,
+    ...sharedListProps
+  }
+}
+
 const FlagsMenu = ({
   anchorEl,
   isoCode,
@@ -37,6 +64,7 @@ const FlagsMenu = ({
   preferredCountries = defaultPreferredCountries,
   className,
   getFlagElement,
+  slotProps: menuSlotProps,
   ...restMenuProps
 }: FlagsMenuProps) => {
   // eslint-disable-next-line no-restricted-syntax -- Intl.DisplayNames instantiation is expensive
@@ -58,11 +86,8 @@ const FlagsMenu = ({
       id="select-country"
       className={`${menuClass} ${className || ''}`}
       slotProps={{
-        list: {
-          role: 'listbox',
-          'aria-activedescendant': isoCode ? `country-${isoCode}` : '',
-          'aria-labelledby': 'select-country'
-        }
+        ...menuSlotProps,
+        list: getMenuListSlotProps(menuSlotProps?.list, isoCode)
       }}
       {...restMenuProps}
     >

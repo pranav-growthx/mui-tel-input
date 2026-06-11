@@ -1,8 +1,17 @@
 import React from 'react'
 import { vi } from 'vitest'
-import { fireEvent, render } from '@testing-library/react'
+import {
+  fireEvent,
+  render,
+  screen as testingScreen
+} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { MuiTelInput, type MuiTelInputInfo } from './index'
+import {
+  type FlagButtonProps,
+  type FlagsMenuProps,
+  MuiTelInput,
+  type MuiTelInputInfo
+} from './index'
 import {
   closeFlagsMenu,
   expectButtonContainsCallingCode,
@@ -351,6 +360,56 @@ describe('components/MuiTelInput', () => {
       render(<MuiTelWrapper disabled />)
       expect(getInputElement()).toBeDisabled()
       expect(getButtonElement()).toBeDisabled()
+    })
+  })
+
+  describe('prop/flagSlots', () => {
+    test('should render the custom flag button and menu slots', () => {
+      const CustomFlagButton = ({ isoCode, onClick }: FlagButtonProps) => {
+        return (
+          <button
+            type="button"
+            data-testid="custom-flag-button"
+            onClick={onClick}
+          >
+            <span data-testid={isoCode ?? 'unknown-flag'} />
+          </button>
+        )
+      }
+
+      const CustomFlagsMenu = ({
+        anchorEl,
+        onSelectCountry
+      }: FlagsMenuProps) => {
+        return anchorEl ? (
+          <div data-testid="custom-flag-menu" role="listbox">
+            <button
+              type="button"
+              data-testid="option-BE"
+              onClick={() => {
+                onSelectCountry('BE')
+              }}
+            >
+              Belgium
+            </button>
+          </div>
+        ) : null
+      }
+
+      render(
+        <MuiTelWrapper
+          flagSlots={{
+            FlagButton: CustomFlagButton,
+            FlagsMenu: CustomFlagsMenu
+          }}
+        />
+      )
+
+      expect(testingScreen.getByTestId('custom-flag-button')).toBeTruthy()
+      fireEvent.click(testingScreen.getByTestId('custom-flag-button'))
+      expect(testingScreen.getByTestId('custom-flag-menu')).toBeTruthy()
+      fireEvent.click(testingScreen.getByTestId('option-BE'))
+      expectButtonIsFlagOf('BE')
     })
   })
 

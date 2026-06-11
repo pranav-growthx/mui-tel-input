@@ -220,6 +220,57 @@ Props for the MUI [Menu](https://mui.com/material-ui/api/menu/) component.
 <MuiTelInput MenuProps={{ disableAutoFocusItem: true }} />
 ```
 
+## `flagSlots`
+
+- Type: `{ FlagButton?: React.ElementType<FlagButtonProps>; FlagsMenu?: React.ElementType<FlagsMenuProps> }`
+- Default: `undefined`
+
+Replace the internal flag button and country menu components.
+
+### Example
+
+```tsx
+import React from 'react'
+import { Button } from '@mui/material'
+import {
+  MuiTelInput,
+  type FlagButtonProps,
+  type FlagsMenuProps
+} from 'mui-tel-input'
+
+const FlagButtonSlot = ({ isoCode, onClick }: FlagButtonProps) => {
+  return (
+    <Button variant="outlined" onClick={onClick}>
+      {isoCode ?? 'Select country'}
+    </Button>
+  )
+}
+
+const FlagsMenuSlot = ({ anchorEl, onSelectCountry }: FlagsMenuProps) => {
+  return anchorEl ? (
+    <div role="listbox">
+      <button
+        type="button"
+        role="option"
+        onClick={() => {
+          onSelectCountry('FR')
+        }}
+      >
+        France
+      </button>
+    </div>
+  ) : null
+}
+
+export const MyComponent = () => {
+  return (
+    <MuiTelInput
+      flagSlots={{ FlagButton: FlagButtonSlot, FlagsMenu: FlagsMenuSlot }}
+    />
+  )
+}
+```
+
 ## `getFlagElement`
 
 - Type: `GetFlagElement`
