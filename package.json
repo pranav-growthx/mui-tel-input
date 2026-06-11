@@ -1,13 +1,12 @@
 {
-  "name": "mui-tel-input",
+  "name": "@pranav-growthx/mui-tel-input",
   "description": "A phone number input designed for the React library MUI built with libphonenumber-js",
   "author": "Victor de la Fouchardiere <victor.delafouchardiere@gmail.com> (https://github.com/viclafouch)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/viclafouch/mui-tel-input/issues"
+    "url": "https://github.com/pranav-growthx/mui-tel-input/issues"
   },
-  "homepage": "https://viclafouch.github.io/mui-tel-input",
-  "version": "11.0.0",
+  "version": "12.0.0",
   "files": [
     "dist"
   ],
@@ -23,7 +22,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/viclafouch/mui-tel-input.git"
+    "url": "git+https://github.com/pranav-growthx/mui-tel-input.git"
   },
   "keywords": [
     "react",
