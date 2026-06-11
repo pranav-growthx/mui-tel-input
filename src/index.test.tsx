@@ -7,8 +7,9 @@ import {
 } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import {
+  type FlagButtonProps,
+  type FlagsMenuProps,
   MuiTelInput,
-  type MuiTelInputCountry,
   type MuiTelInputInfo
 } from './index'
 import {
@@ -364,13 +365,7 @@ describe('components/MuiTelInput', () => {
 
   describe('prop/flagSlots', () => {
     test('should render the custom flag button and menu slots', () => {
-      const CustomFlagButton = ({
-        isoCode,
-        onClick
-      }: {
-        isoCode: string | null
-        onClick?: React.MouseEventHandler<HTMLButtonElement>
-      }) => {
+      const CustomFlagButton = ({ isoCode, onClick }: FlagButtonProps) => {
         return (
           <button
             type="button"
@@ -385,10 +380,7 @@ describe('components/MuiTelInput', () => {
       const CustomFlagsMenu = ({
         anchorEl,
         onSelectCountry
-      }: {
-        anchorEl: HTMLElement | null
-        onSelectCountry: (isoCode: MuiTelInputCountry) => void
-      }) => {
+      }: FlagsMenuProps) => {
         return anchorEl ? (
           <div data-testid="custom-flag-menu" role="listbox">
             <button

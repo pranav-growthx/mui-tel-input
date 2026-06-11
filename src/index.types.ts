@@ -1,4 +1,6 @@
 import type { NumberType } from 'libphonenumber-js'
+import type { FlagButtonProps } from '@components/FlagButton/FlagButton'
+import type { FlagsMenuProps } from '@components/FlagsMenu/FlagsMenu'
 import type { IconButtonProps } from '@mui/material/IconButton'
 import type { MenuProps } from '@mui/material/Menu'
 import type { TextFieldProps } from '@mui/material/TextField'
@@ -23,8 +25,8 @@ export type MuiTelInputReason = 'country' | 'input' | 'blur'
 export type MuiTelInputFlagElement = React.ReactNode
 
 export type MuiTelInputFlagSlots = {
-  FlagButton?: React.ElementType
-  FlagsMenu?: React.ElementType
+  FlagButton?: React.ElementType<FlagButtonProps>
+  FlagsMenu?: React.ElementType<FlagsMenuProps>
 }
 
 export type GetFlagElement = (
