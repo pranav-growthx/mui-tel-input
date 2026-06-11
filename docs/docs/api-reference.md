@@ -222,7 +222,7 @@ Props for the MUI [Menu](https://mui.com/material-ui/api/menu/) component.
 
 ## `flagSlots`
 
-- Type: `{ FlagButton?: React.ElementType; FlagsMenu?: React.ElementType }`
+- Type: `{ FlagButton?: React.ElementType<FlagButtonProps>; FlagsMenu?: React.ElementType<FlagsMenuProps> }`
 - Default: `undefined`
 
 Replace the internal flag button and country menu components.
@@ -232,15 +232,13 @@ Replace the internal flag button and country menu components.
 ```tsx
 import React from 'react'
 import { Button } from '@mui/material'
-import { MuiTelInput, type MuiTelInputCountry } from 'mui-tel-input'
+import {
+  MuiTelInput,
+  type FlagButtonProps,
+  type FlagsMenuProps
+} from 'mui-tel-input'
 
-const FlagButtonSlot = ({
-  isoCode,
-  onClick
-}: {
-  isoCode: string | null
-  onClick?: React.MouseEventHandler<HTMLButtonElement>
-}) => {
+const FlagButtonSlot = ({ isoCode, onClick }: FlagButtonProps) => {
   return (
     <Button variant="outlined" onClick={onClick}>
       {isoCode ?? 'Select country'}
@@ -248,13 +246,7 @@ const FlagButtonSlot = ({
   )
 }
 
-const FlagsMenuSlot = ({
-  anchorEl,
-  onSelectCountry
-}: {
-  anchorEl: HTMLElement | null
-  onSelectCountry: (isoCode: MuiTelInputCountry) => void
-}) => {
+const FlagsMenuSlot = ({ anchorEl, onSelectCountry }: FlagsMenuProps) => {
   return anchorEl ? (
     <div role="listbox">
       <button
