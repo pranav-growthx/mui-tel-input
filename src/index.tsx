@@ -1,8 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { flagContainerClass } from '@components/Flag/Flag'
+import Flag, { flagContainerClass } from '@components/Flag/Flag'
 import FlagButton, { flagButtonClass } from '@components/FlagButton/FlagButton'
-import {
+import FlagMenuItem, {
   callingCodeClass,
   listItemIconFlagClass,
   listItemTextCountryClass,
@@ -50,6 +50,28 @@ export type {
 export { matchIsValidTel } from '@shared/helpers/valid-phone-number'
 
 export const textFieldClass = 'MuiTelInput-TextField'
+export * from '@components/Flag/Flag'
+export * from '@components/FlagButton/FlagButton'
+export * from '@components/FlagMenuItem/FlagMenuItem'
+export * from '@components/FlagsMenu/FlagsMenu'
+export * from '@shared/constants/continents'
+export * from '@shared/constants/countries'
+export * from '@shared/constants/lang'
+export * from '@shared/helpers/array'
+export * from '@shared/helpers/country'
+export * from '@shared/helpers/flag'
+export * from '@shared/helpers/flag'
+export * from '@shared/helpers/intl'
+export * from '@shared/helpers/log'
+export * from '@shared/helpers/object'
+export * from '@shared/helpers/ref'
+export * from '@shared/helpers/string'
+export * from '@shared/helpers/valid-phone-number'
+export * from '@shared/hooks/useAnchor'
+export * from '@shared/hooks/useEvents'
+export * from '@shared/hooks/useMissmatchProps'
+export * from '@shared/hooks/usePhoneDigits'
+export { Flag, FlagButton, FlagMenuItem, FlagsMenu }
 
 const MuiTelInput = (props: MuiTelInputProps) => {
   const {
