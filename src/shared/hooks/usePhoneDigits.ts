@@ -4,6 +4,10 @@ import type { MuiTelInputContinent } from '@shared/constants/continents'
 import { COUNTRIES, type MuiTelInputCountry } from '@shared/constants/countries'
 import { matchIsArray } from '@shared/helpers/array'
 import {
+  getBulkInsertedE164,
+  matchIsBulkInsertEvent
+} from '@shared/helpers/autofill'
+import {
   getCallingCodeOfCountry,
   matchContinentsIncludeCountry,
   matchIsSharedCallingCode
@@ -173,12 +177,29 @@ export default function usePhoneDigits({
   }
 
   const onInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    const inputValue = forceCallingCode
-      ? makeSureStartWithPlusIsoCode(
-          event.target.value,
-          state.isoCode as MuiTelInputCountry
-        )
-      : makeSureStartWithPlusOrEmpty(event.target.value)
+    // Autofill/paste can hand us a complete number whose country calling code
+    // is embedded without a leading '+' (autocomplete="tel" is specified to
+    // autofill the full international number). Prepending the selected
+    // country's calling code would silently corrupt it — e.g. an autofilled
+    // Singapore 6582541458 becomes +91 65825 41458 while the selector sits on
+    // IN, and both interpretations validate, so this is unrecoverable
+    // downstream. When a bulk-inserted value forms a fully valid international
+    // number on its own, adopt that interpretation — the country selector
+    // follows visibly. Keystroke input is never reinterpreted. Without
+    // forceCallingCode a plus-less value is already read as international.
+    const bulkInsertedE164 =
+      forceCallingCode && matchIsBulkInsertEvent(event, state.inputValue)
+        ? getBulkInsertedE164(event.target.value)
+        : null
+
+    const inputValue =
+      bulkInsertedE164 ??
+      (forceCallingCode
+        ? makeSureStartWithPlusIsoCode(
+            event.target.value,
+            state.isoCode as MuiTelInputCountry
+          )
+        : makeSureStartWithPlusOrEmpty(event.target.value))
 
     const formattedValue = typeNewValue(inputValue)
     const newCountryCode = asYouTypeRef.current.getCountry()

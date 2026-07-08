@@ -618,4 +618,98 @@ describe('components/MuiTelInput', () => {
     await selectCountry('BE')
     expect(getInputElement().value).toBe('+32')
   })
+
+  describe('autofill and bulk insert', () => {
+    // Browser autofill sets the whole value in a single event that carries no
+    // inputType — fireEvent.change reproduces exactly that shape.
+    const autofillInputElement = (value: string) => {
+      fireEvent.change(getInputElement(), { target: { value } })
+    }
+
+    test('should adopt an embedded country code when autofill fills a full international number without +', () => {
+      const callbackOnChange = vi.fn()
+      render(
+        <MuiTelWrapper
+          defaultCountry="IN"
+          forceCallingCode
+          onChange={callbackOnChange}
+        />
+      )
+      autofillInputElement('6582541458')
+      expectButtonIsFlagOf('SG')
+      const lastCall = callbackOnChange.mock.calls.at(-1)!
+      expect(lastCall[0]).toBe('+65 8254 1458')
+      expect(lastCall[1].countryCallingCode).toBe('65')
+      expect(lastCall[1].nationalNumber).toBe('82541458')
+    })
+
+    test('should adopt an embedded country code from a formatted autofill value', () => {
+      const callbackOnChange = vi.fn()
+      render(
+        <MuiTelWrapper
+          defaultCountry="IN"
+          forceCallingCode
+          onChange={callbackOnChange}
+        />
+      )
+      autofillInputElement('1 (517) 836-5282')
+      expectButtonIsFlagOf('US')
+      const lastCall = callbackOnChange.mock.calls.at(-1)!
+      expect(lastCall[1].countryCallingCode).toBe('1')
+      expect(lastCall[1].nationalNumber).toBe('5178365282')
+    })
+
+    test('should keep the selected country when autofill fills a bare national number', () => {
+      const callbackOnChange = vi.fn()
+      render(
+        <MuiTelWrapper
+          defaultCountry="IN"
+          forceCallingCode
+          onChange={callbackOnChange}
+        />
+      )
+      autofillInputElement('9876543210')
+      expectButtonIsFlagOf('IN')
+      const lastCall = callbackOnChange.mock.calls.at(-1)!
+      expect(lastCall[1].countryCallingCode).toBe('91')
+      expect(lastCall[1].nationalNumber).toBe('9876543210')
+    })
+
+    test('should adopt an embedded country code when pasting', async () => {
+      const callbackOnChange = vi.fn()
+      render(
+        <MuiTelWrapper
+          defaultCountry="IN"
+          forceCallingCode
+          onChange={callbackOnChange}
+        />
+      )
+      await userEvent.click(getInputElement())
+      await userEvent.paste('6582541458')
+      expectButtonIsFlagOf('SG')
+      const lastCall = callbackOnChange.mock.calls.at(-1)!
+      expect(lastCall[1].countryCallingCode).toBe('65')
+    })
+
+    test('should never reinterpret digits typed keystroke by keystroke', async () => {
+      const callbackOnChange = vi.fn()
+      render(
+        <MuiTelWrapper
+          defaultCountry="IN"
+          forceCallingCode
+          onChange={callbackOnChange}
+        />
+      )
+      await typeInInputElement('6582541458')
+      expectButtonIsFlagOf('IN')
+      const lastCall = callbackOnChange.mock.calls.at(-1)!
+      expect(lastCall[1].countryCallingCode).toBe('91')
+    })
+
+    test('should keep adopting autofill values that already start with +', () => {
+      render(<MuiTelWrapper defaultCountry="IN" forceCallingCode />)
+      autofillInputElement('+6582541458')
+      expectButtonIsFlagOf('SG')
+    })
+  })
 })
